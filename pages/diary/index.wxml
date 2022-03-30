@@ -1,0 +1,5 @@
+<view class="container diary-list">
+    <view wx:for="{{ diary }}">
+        {{ item.title }}: {{ item.content}}
+    </view>
+</view>

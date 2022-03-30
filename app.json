@@ -1,0 +1,43 @@
+{
+    "pages": [
+        "pages/index/index",
+        "pages/logs/logs",
+        "pages/diary/index",
+        "pages/message/index"
+    ],
+    "window": {
+        "backgroundTextStyle": "light",
+        "navigationBarBackgroundColor": "#fff",
+        "navigationBarTitleText": "Weixin",
+        "navigationBarTextStyle": "black"
+    },
+    "style": "v2",
+    "sitemapLocation": "sitemap.json",
+    "themeLocation": "theme.json",
+    "tabBar": {
+        "color": "@tabBarColor",
+        "selectedColor": "@tabBarSelectedColor",
+        "borderStyle": "@tabBarBorderStyle",
+        "backgroundColor": "@tabBarBackgroundColor",
+        "list": [
+            {
+                "pagePath": "pages/index/index",
+                "iconPath": "@iconPathDiary",
+                "selectedIconPath": "@selectediconPathDiary",
+                "text": "今日计划"
+            },
+            {
+                "pagePath": "pages/diary/index",
+                "iconPath": "@iconPathDiary",
+                "selectedIconPath": "@selectediconPathDiary",
+                "text": "日记"
+            },
+            {
+                "pagePath": "pages/message/index",
+                "iconPath": "@iconPathDiary",
+                "selectedIconPath": "@selectediconPathDiary",
+                "text": "消息"
+            }
+        ]
+    }
+}
