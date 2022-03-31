@@ -33,9 +33,6 @@ Page({
           userInfo: res.userInfo,
           hasUserInfo: true
         })
-        wx.switchTab({
-          url: '../diary/index'
-        })
       }
     })
   },

@@ -7,8 +7,8 @@
     ],
     "window": {
         "backgroundTextStyle": "light",
-        "navigationBarBackgroundColor": "#fff",
-        "navigationBarTitleText": "Weixin",
+        "navigationBarBackgroundColor": "#F0F2F5",
+        "navigationBarTitleText": "Diary in Pairs",
         "navigationBarTextStyle": "black"
     },
     "style": "v2",
@@ -24,19 +24,19 @@
                 "pagePath": "pages/index/index",
                 "iconPath": "@iconPathDiary",
                 "selectedIconPath": "@selectediconPathDiary",
-                "text": "今日计划"
+                "text": "Diary"
             },
             {
                 "pagePath": "pages/diary/index",
                 "iconPath": "@iconPathDiary",
                 "selectedIconPath": "@selectediconPathDiary",
-                "text": "日记"
+                "text": "In Pairs"
             },
             {
                 "pagePath": "pages/message/index",
                 "iconPath": "@iconPathDiary",
                 "selectedIconPath": "@selectediconPathDiary",
-                "text": "消息"
+                "text": "小工具"
             }
         ]
     }

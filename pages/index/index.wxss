@@ -1,19 +1,33 @@
 /**index.wxss**/
-.userinfo {
+.login-info {
+  margin-top: 200px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: #aaa;
+}
+
+.user-container {
+  background: #ffffff;
+}
+
+.avatar-cotainer {
+  display: flex;
+  align-items: center;
 }
 
 .userinfo-avatar {
   overflow: hidden;
-  width: 128rpx;
-  height: 128rpx;
+  width: 80rpx;
+  height: 80rpx;
   margin: 20rpx;
   border-radius: 50%;
 }
 
-.usermotto {
-  margin-top: 200px;
+.diary-editor-container {
+  margin-top: 20rpx;
+}
+
+.diary-editor {
+  position: fixed;
+  height: 100%;
 }
