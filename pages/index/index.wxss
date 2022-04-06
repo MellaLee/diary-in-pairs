@@ -28,6 +28,5 @@
 }
 
 .diary-editor {
-  position: fixed;
   height: 100%;
 }

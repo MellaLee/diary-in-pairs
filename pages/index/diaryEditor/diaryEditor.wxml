@@ -1,18 +1,18 @@
 <!--pages/index/editor/editor.wxml-->
 <view class="diary-editor-component">
-    <view class="date-picker">
+    <view class="header-toolbar">
         <picker mode="date" value="{{selectedDate}}" bindchange="bindDateChange">
             <view class="picker">
                 日期：{{selectedDate}}
             </view>
         </picker>
-        <!-- <button type="primary" size="mini" plain="true">保存</button> -->
+        <button class="publish-diary-btn" type="primary" size="mini">发表</button>
     </view>
-    <view class="editor-container">
+    <view class="diary-editor-container">
         <editor class="ql-container editor-id" placeholder="{{placeholder}}" bindstatuschange="onStatusChange" bindready="onEditorReady">
         </editor>
 
-        <view class="toolbar" catchtouchend="format" hidden="{{false}}" style="bottom: {{isIOS ? keyboardHeight : 0}}px; height: {{toolBarHeight}}px;">
+        <view class="bottom-toolbar" catchtouchend="format" hidden="{{false}}" style="bottom: {{isIOS ? keyboardHeight : 0}}px; height: {{toolBarHeight}}px;">
             <i class="iconfont icon-charutupian" catchtouchend="insertImage"></i>
             <i class="iconfont icon-format-header-2 {{formats.header === 2 ? 'ql-active' : ''}}" data-name="header" data-value="{{2}}"></i>
             <i class="iconfont icon-format-header-3 {{formats.header === 3 ? 'ql-active' : ''}}" data-name="header" data-value="{{3}}"></i>
@@ -22,6 +22,14 @@
             <i class="iconfont icon--checklist" data-name="list" data-value="check"></i>
             <i class="iconfont icon-youxupailie {{formats.list === 'ordered' ? 'ql-active' : ''}}" data-name="list" data-value="ordered"></i>
             <i class="iconfont icon-wuxupailie {{formats.list === 'bullet' ? 'ql-active' : ''}}" data-name="list" data-value="bullet"></i>
+        </view>
+
+        <view class="location-container" bindtap="chooseLocation">
+            <view class="location-display">
+                <image class="location-icon" src="./assets/map.png"></image>
+                <view>{{ location === '' ? '所在位置' : location }}</view>
+            </view>
+            <view class="navigator-arrow"></view>
         </view>
     </view>
 </view>

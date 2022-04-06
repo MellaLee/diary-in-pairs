@@ -1,17 +1,37 @@
 /* pages/index/editor/editor.wxss */
 @import "./assets/iconfont.wxss";
+@import "/common/index.wxss";
 
 .diary-editor-component {
-  background-color: #ffffff;
-  padding: 20rpx;
+  --component-padding: 10px;
+  --header-toolbar-height: 40px;
+  --bottom-toolbar-height: 50px;
+  --location-height: 30px;
 }
 
-.date-picker {
-  height: 60rpx;
+.diary-editor-component {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: calc(100% - var(--component-padding) * 2);
+  height: calc(100% - var(--component-padding) * 2);
+  background-color: #ffffff;
+  padding: var(--component-padding);
+}
+
+.header-toolbar {
+  height: var(--header-toolbar-height);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.publish-diary-btn {
+  margin: 0;
 }
 
 .diary-editor-container {
-  margin-top: 20rpx;
+  height: calc(100% - var(--bottom-toolbar-height) - var(--header-toolbar-height) - var(--location-height));
 }
 
 .ql-container {
@@ -23,7 +43,8 @@
   overflow: auto;
   padding: 10px 10px 20px 10px;
   border: 1px solid #ECECEC;
-  -webkit-overflow-scrolling: touch; /* 惯性滚动 */
+  -webkit-overflow-scrolling: touch;
+  /* 惯性滚动 */
 }
 
 .ql-active {
@@ -38,17 +59,40 @@
   font-size: 20px;
 }
 
-.toolbar {
+.bottom-toolbar {
   box-sizing: border-box;
   padding: 0 10px;
-  height: 50px;
+  height: var(--toolbar-height);
   width: 100%;
+  position: fixed;
+  left: 0;
+  right: 100%;
+  bottom: 50px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   border: 1px solid #ECECEC;
   border-left: none;
   border-right: none;
-  padding-bottom: constant(safe-area-inset-bottom);
-  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.location-container {
+  position: fixed;
+  bottom: 50px;
+  height: var(--location-height);
+  display: flex;
+  align-items: center;
+  padding-bottom: 5px;
+  justify-content: space-between;
+  width: calc(100% - var(--component-padding) * 2);
+}
+
+.location-display {
+  display: flex;
+}
+
+.location-icon {
+  width: calc(var(--location-height) - 5px);
+  height: calc(var(--location-height) - 5px);
+  margin-right: 14px;
 }

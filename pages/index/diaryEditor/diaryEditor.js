@@ -19,6 +19,7 @@ Component({
             pic: '',
             video: ''
         },
+        location: '',
         // 编辑器属性
         formats: {},
         readOnly: false,
@@ -146,7 +147,6 @@ Component({
                 value
             } = e.target.dataset
             if (!name) return
-            // console.log('format', name, value)
             this.editorCtx.format(name, value)
         },
         onStatusChange(e) {
@@ -193,6 +193,24 @@ Component({
                         width: '80%',
                         success() {
                             console.log('insert image success')
+                        }
+                    })
+                }
+            })
+        },
+        chooseLocation() {
+            const that = this
+            wx.getLocation({
+                type: 'wgs84',
+                success(res) {
+                    console.log('lmy', that);
+                    wx.chooseLocation({
+                        latitude: res.latitude,
+                        longitude: res.longitude,
+                        success(data) {
+                            that.setData({
+                                location: data.name
+                            })
                         }
                     })
                 }
