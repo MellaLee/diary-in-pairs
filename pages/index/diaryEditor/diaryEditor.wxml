@@ -6,10 +6,10 @@
                 日期：{{selectedDate}}
             </view>
         </picker>
-        <button class="publish-diary-btn" type="primary" size="mini">发表</button>
+        <button class="publish-diary-btn" type="primary" size="mini" bindtap="onPublish">发表</button>
     </view>
     <view class="diary-editor-container">
-        <editor class="ql-container editor-id" placeholder="{{placeholder}}" bindstatuschange="onStatusChange" bindready="onEditorReady">
+        <editor class="ql-container editor-id" placeholder="{{placeholder}}" bindstatuschange="onStatusChange" bindready="onEditorReady" bindinput="onEditing">
         </editor>
 
         <view class="bottom-toolbar" catchtouchend="format" hidden="{{false}}" style="bottom: {{isIOS ? keyboardHeight : 0}}px; height: {{toolBarHeight}}px;">

@@ -13,12 +13,8 @@ Component({
      * 组件的初始数据
      */
     data: {
-        selectedDate: util.formatTime(new Date()),
+        selectedDate: util.formatDay(new Date()),
         editContent: '',
-        media: {
-            pic: '',
-            video: ''
-        },
         location: '',
         // 编辑器属性
         formats: {},
@@ -138,8 +134,13 @@ Component({
                 that.editorCtx = res.context
             }).exec()
         },
-        blur() {
-            this.editorCtx.blur()
+        onEditing(e) {
+            if (e) {
+                console.log('lmy editing', e.detail)
+                this.setData({
+                    editContent: e.detail.html
+                })
+            }
         },
         format(e) {
             const {
@@ -151,6 +152,7 @@ Component({
         },
         onStatusChange(e) {
             const formats = e.detail
+            console.log('lmy status change', e)
             this.setData({
                 formats
             })
@@ -203,7 +205,6 @@ Component({
             wx.getLocation({
                 type: 'wgs84',
                 success(res) {
-                    console.log('lmy', that);
                     wx.chooseLocation({
                         latitude: res.latitude,
                         longitude: res.longitude,
@@ -215,12 +216,42 @@ Component({
                     })
                 }
             })
+        },
+        onPublish() {
+            console.log('lmy publish', this.data.location, this.data.editContent)
+            // 1. 获取数据库引用
+            const db = wx.cloud.database()
+            // 2. 构造查询语句
+            db.collection('diary').add({
+                data: {
+                    content: this.data.editContent,
+                    location: this.data.location,
+                    createdAt: util.formatSec(new Date()),
+                    deleted: 0
+                },
+                success: res => {
+                    wx.showToast({
+                        title: '发表成功',
+                        duration: 2000,
+                        success: () => {
+                            wx.switchTab({
+                                url: '/pages/diary/index',
+                            })
+                        }
+                    })
+                },
+                fail: res => {
+                    wx.showToast({
+                        title: '发表失败',
+                    })
+                }
+            })
         }
     },
 
     lifetimes: {
         ready: function () {
-            console.log("ready");
+            console.log("ready")
         }
     }
 })
