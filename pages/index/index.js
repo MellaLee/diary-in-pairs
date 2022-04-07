@@ -1,6 +1,7 @@
 // index.js
 // 获取应用实例
 const app = getApp()
+const util = require('../../utils/util.js')
 
 Page({
   data: {
@@ -17,6 +18,29 @@ Page({
     })
   },
   onLoad() {
+    wx.showLoading({
+      title: '登录中',
+    });
+    const db = wx.cloud.database()
+    db.collection('user').where({
+      _openid: app.globalData.openid
+    }).get({
+      success: (res) => {
+        let data = res.data
+        if (data && data.length > 0) {
+          this.setData({
+            hasUserInfo: true
+          })
+          app.globalData.nickName = data[0].nickName;
+          app.globalData.avatarUrl = data[0].avarUrl;
+        }
+
+        wx.hideLoading();
+      },
+      fail: () => {
+        wx.hideLoading();
+      }
+    })
     if (wx.getUserProfile) {
       this.setData({
         canIUseGetUserProfile: true
@@ -28,7 +52,23 @@ Page({
     wx.getUserProfile({
       desc: '展示用户信息', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
       success: (res) => {
-        console.log(res)
+        console.log('lmy get user profile', res)
+        const nickName = res.userInfo.nickName
+        const avatarUrl = res.userInfo.avatarUrl
+        const db = wx.cloud.database()
+        db.collection('user').add({
+          data: {
+            nickName,
+            avatarUrl,
+            createdAt: util.formatSec(new Date())
+          }
+        }).then(res => {
+          console.log('lmy db add user', res);
+          app.globalData.nickName = nickName
+          app.globalData.avatarUrl = avatarUrl
+        }).catch(err => {
+          console.log('lmy error to add user', err)
+        })
         this.setData({
           userInfo: res.userInfo,
           hasUserInfo: true

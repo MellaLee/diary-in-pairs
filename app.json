@@ -19,6 +19,7 @@
             "desc": "你的位置信息将用于关联日志发生地"
         }
     },
+    "lazyCodeLoading": "requiredComponents",
     "tabBar": {
         "color": "@tabBarColor",
         "selectedColor": "@tabBarSelectedColor",
