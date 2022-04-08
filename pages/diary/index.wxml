@@ -1,5 +1,15 @@
-<view class="container diary-list">
-    <view wx:for="{{ diary }}">
-        {{ item.title }}: {{ item.content}}
+<view class="diary-list">
+    <view class="diary-list-item" wx:for="{{ diary }}" wx:key="_id">
+        <view class="avatar-container">
+            <image class="avatar" src="{{ item.avatarUrl }}"></image>
+        </view>
+        <view class="content-container">
+            <view class="nick-name">{{ item.nickName }}</view>
+            <view class="diary-content-container">
+                <rich-text class="diary-content" nodes="{{ item.content }}"></rich-text>
+            </view>
+            <view class="location other-info">{{ item.location }}</view>
+            <view class="create-time other-info">{{ item.createdAt }}</view>
+        </view>
     </view>
 </view>

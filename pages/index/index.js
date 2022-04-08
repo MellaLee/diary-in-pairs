@@ -1,6 +1,9 @@
 // index.js
 // 获取应用实例
 const app = getApp()
+const {
+  env
+} = require('../../env.js')
 const util = require('../../utils/util.js')
 
 Page({
@@ -21,12 +24,36 @@ Page({
     wx.showLoading({
       title: '登录中',
     });
+    this.getOpenId()
+    if (wx.getUserProfile) {
+      this.setData({
+        canIUseGetUserProfile: true
+      })
+    }
+  },
+  getOpenId() {
+    wx.cloud.callFunction({
+      name: 'quickstartFunctions',
+      config: {
+        env: env.cloudId
+      },
+      data: {
+        type: 'getOpenId'
+      }
+    }).then((resp) => {
+      let openid = resp.result.openid
+      app.globalData.openid = openid
+      this.getUserFromDB(openid)
+    })
+  },
+  getUserFromDB(openid) {
     const db = wx.cloud.database()
     db.collection('user').where({
-      _openid: app.globalData.openid
+      _openid: openid
     }).get({
       success: (res) => {
         let data = res.data
+        console.log("lmy", data, openid);
         if (data && data.length > 0) {
           this.setData({
             hasUserInfo: true
@@ -41,11 +68,6 @@ Page({
         wx.hideLoading();
       }
     })
-    if (wx.getUserProfile) {
-      this.setData({
-        canIUseGetUserProfile: true
-      })
-    }
   },
   getUserProfile(e) {
     // 推荐使用wx.getUserProfile获取用户信息，开发者每次通过该接口获取用户个人信息均需用户确认，开发者妥善保管用户快速填写的头像昵称，避免重复弹窗

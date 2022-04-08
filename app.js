@@ -1,6 +1,6 @@
 // app.js
-const { env } = require('./env')
 
+const { env } = require('./env.js')
 App({
   onLaunch() {
     // 展示本地存储能力
@@ -16,21 +16,6 @@ App({
         traceUser: true,
       });
     }
-    this.getUserInfo()
-  },
-  getUserInfo() {
-    const that = this
-    wx.cloud.callFunction({
-      name: 'quickstartFunctions',
-      config: {
-        env: env.cloudId
-      },
-      data: {
-        type: 'getOpenId'
-      }
-    }).then((resp) => {
-      this.globalData.openid = resp.result.openid
-   })
   },
   globalData: {
     openid: '',

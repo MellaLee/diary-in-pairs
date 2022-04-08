@@ -229,11 +229,12 @@ Component({
                     createdAt: util.formatSec(new Date()),
                     deleted: 0
                 },
-                success: res => {
+                success: res => {       
                     wx.showToast({
                         title: '发表成功',
                         duration: 2000,
                         success: () => {
+                            this.clear()
                             wx.switchTab({
                                 url: '/pages/diary/index',
                             })
