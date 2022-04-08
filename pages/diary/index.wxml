@@ -1,15 +1,18 @@
 <view class="diary-list">
-    <view class="diary-list-item" wx:for="{{ diary }}" wx:key="_id">
-        <view class="avatar-container">
-            <image class="avatar" src="{{ item.avatarUrl }}"></image>
-        </view>
-        <view class="content-container">
-            <view class="nick-name">{{ item.nickName }}</view>
-            <view class="diary-content-container">
-                <rich-text class="diary-content" nodes="{{ item.content }}"></rich-text>
+    <scroll-view class="scroll-view-diary" scroll-y="true" enable-back-to-top="true" bindscrolltolower="lower" refresher-enabled="true" refresher-default-style="white" refresher-background="#f7f7f7fa"
+    refresher-threshold="{{100}}" bindrefresherrefresh="upper" refresher-triggered="{{pullRefresh}}">
+        <view class="scroll-diary-list-item" wx:for="{{ diary }}" wx:key="_id">
+            <view class="avatar-container">
+                <image class="avatar" src="{{ item.avatarUrl }}"></image>
             </view>
-            <view class="location other-info">{{ item.location }}</view>
-            <view class="create-time other-info">{{ item.createdAt }}</view>
+            <view class="content-container">
+                <view class="nick-name">{{ item.nickName }}</view>
+                <view class="diary-content-container">
+                    <rich-text class="diary-content" nodes="{{ item.content }}"></rich-text>
+                </view>
+                <view class="location other-info">{{ item.location }}</view>
+                <view class="create-time other-info">{{ item.createdAt }}</view>
+            </view>
         </view>
-    </view>
+    </scroll-view>
 </view>
