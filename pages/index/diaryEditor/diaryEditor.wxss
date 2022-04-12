@@ -5,8 +5,10 @@
 .diary-editor-component {
   --component-padding: 10px;
   --header-toolbar-height: 40px;
-  --bottom-toolbar-height: 50px;
+  --media-container-height: 110px;
+  --media-content-height: 84px;
   --location-height: 30px;
+  --bottom-toolbar-height: 50px;
 }
 
 .diary-editor-component {
@@ -31,7 +33,7 @@
 }
 
 .diary-editor-container {
-  height: calc(100% - var(--bottom-toolbar-height) - var(--header-toolbar-height) - var(--location-height));
+  height: calc(100% - var(--bottom-toolbar-height) - var(--header-toolbar-height) - var(--location-height) - var(--media-container-height));
 }
 
 .ql-container {
@@ -95,4 +97,61 @@
   width: calc(var(--location-height) - 5px);
   height: calc(var(--location-height) - 5px);
   margin-right: 14px;
+}
+
+.media-container {
+  height: var(--media-container-height);
+}
+
+.media-show {
+  padding-top: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.media-hint {
+  font-size: 13px;
+  color: #ccc;
+}
+
+.add-media-icon {
+  display: inline-block;
+  width: calc(var(--media-content-height) - 4px);
+  height: calc(var(--media-content-height) - 4px);
+  color: #ccc;
+  border: 2px dashed;
+  transition: color .25s;
+  position: relative;
+  overflow: hidden;
+  bottom: 2px;
+}
+
+.add-media-icon::before,
+.add-media-icon::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+}
+
+.add-media-icon::before {
+  width: 20px;
+  border-top: 4px solid;
+  margin: -2px 0 0 -10px;
+}
+
+.add-media-icon::after {
+  height: 20px;
+  border-left: 4px solid;
+  margin: -10px 0 0 -2px;
+}
+
+.hide-mode {
+  display: none;
+}
+
+.add-media-img {
+  width: var(--media-content-height);
+  height: var(--media-content-height);
+  margin-right: 10px;
 }

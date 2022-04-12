@@ -18,7 +18,7 @@ const formatSec = date => {
 const formatDateDiff = (dateTimeStamp) => {
   // 时间字符串转时间戳
   var timestamp = new Date(dateTimeStamp).getTime();
-  
+
   var minute = 1000 * 60;
   var hour = minute * 60;
   var day = hour * 24;
@@ -29,7 +29,7 @@ const formatDateDiff = (dateTimeStamp) => {
   var diffValue = now - timestamp;
   var result;
   if (diffValue < 0) {
-      return;
+    return;
   }
   var yearC = diffValue / year;
   var monthC = diffValue / month;
@@ -38,19 +38,19 @@ const formatDateDiff = (dateTimeStamp) => {
   var hourC = diffValue / hour;
   var minC = diffValue / minute;
   if (yearC >= 1) {
-      result = "" + parseInt(yearC) + "年前";
+    result = "" + parseInt(yearC) + "年前";
   } else if (monthC >= 1) {
-      result = "" + parseInt(monthC) + "月前";
+    result = "" + parseInt(monthC) + "月前";
   } else if (weekC >= 1) {
-      result = "" + parseInt(weekC) + "周前";
+    result = "" + parseInt(weekC) + "周前";
   } else if (dayC >= 1) {
-      result = "" + parseInt(dayC) + "天前";
+    result = "" + parseInt(dayC) + "天前";
   } else if (hourC >= 1) {
-      result = "" + parseInt(hourC) + "小时前";
+    result = "" + parseInt(hourC) + "小时前";
   } else if (minC >= 1) {
-      result = "" + parseInt(minC) + "分钟前";
+    result = "" + parseInt(minC) + "分钟前";
   } else
-      result = "刚刚";
+    result = "刚刚";
   return result;
 }
 
@@ -59,8 +59,30 @@ const formatNumber = n => {
   return n[1] ? n : `0${n}`
 }
 
+const getFileType = filename => {
+  let lastIndex = filename.lastIndexOf('.')
+  let fileFormat = filename.substring(lastIndex + 1).toLowerCase()
+  switch (fileFormat) {
+    case 'jpg':
+    case 'png':
+    case 'svg':
+    case 'webp':
+    case 'gif':
+      return {
+        format: fileFormat,
+          type: 'img'
+      }
+      default:
+        return {
+          format: fileFormat,
+            type: 'unkown'
+        }
+  }
+}
+
 module.exports = {
   formatDay,
   formatSec,
-  formatDateDiff
+  formatDateDiff,
+  getFileType
 }

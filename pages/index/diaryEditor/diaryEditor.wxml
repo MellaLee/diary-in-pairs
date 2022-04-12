@@ -12,8 +12,25 @@
         <editor class="ql-container editor-id" placeholder="{{placeholder}}" bindstatuschange="onStatusChange" bindready="onEditorReady" bindinput="onEditing">
         </editor>
 
+        <view class="media-container">
+            <view class="media-show">
+                <view class="media-item" wx:for="{{ media }}" wx:key="index">
+                    <image class="add-media-img" src="{{ item.tempFilePath }}" mode="aspectFill" catchtouchstart="onImageTouchStart" catchtouchend="onImageTouchEnd" data-index="{{ index }}" data-path="{{ item.tempFilePath }}"></image>
+                </view>
+                <view class="add-media-icon{{ media.length === maxMediaItemLength ?  ' hide-mode' : '' }}" catchtouchend="insertImage"></view>
+            </view>
+            <view wx:if="{{ media.length > 0 }}" class="media-hint">长按图片可删除~</view>
+        </view>
+
+        <view class="location-container" bindtap="chooseLocation">
+            <view class="location-display">
+                <image class="location-icon" src="./assets/map.png"></image>
+                <view>{{ location === '' ? '所在位置' : location }}</view>
+            </view>
+            <view class="navigator-arrow"></view>
+        </view>
+
         <view class="bottom-toolbar" catchtouchend="format" hidden="{{false}}" style="bottom: {{isIOS ? keyboardHeight : 0}}px; height: {{toolBarHeight}}px;">
-            <i class="iconfont icon-charutupian" catchtouchend="insertImage"></i>
             <i class="iconfont icon-format-header-2 {{formats.header === 2 ? 'ql-active' : ''}}" data-name="header" data-value="{{2}}"></i>
             <i class="iconfont icon-format-header-3 {{formats.header === 3 ? 'ql-active' : ''}}" data-name="header" data-value="{{3}}"></i>
             <i class="iconfont icon-zitijiacu {{formats.bold ? 'ql-active' : ''}}" data-name="bold"></i>
@@ -24,12 +41,6 @@
             <i class="iconfont icon-wuxupailie {{formats.list === 'bullet' ? 'ql-active' : ''}}" data-name="list" data-value="bullet"></i>
         </view>
 
-        <view class="location-container" bindtap="chooseLocation">
-            <view class="location-display">
-                <image class="location-icon" src="./assets/map.png"></image>
-                <view>{{ location === '' ? '所在位置' : location }}</view>
-            </view>
-            <view class="navigator-arrow"></view>
-        </view>
+
     </view>
 </view>

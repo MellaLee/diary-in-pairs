@@ -1,5 +1,6 @@
 // pages/index/editor/editor.js
 const util = require('../../../utils/util.js')
+const app = getApp()
 
 Component({
     /**
@@ -16,6 +17,10 @@ Component({
         selectedDate: util.formatDay(new Date()),
         editContent: '',
         location: '',
+        media: [],
+        maxMediaItemLength: 3,
+        touchStart: '',
+        imgPreviewPaths: [],
         // 编辑器属性
         formats: {},
         readOnly: false,
@@ -165,6 +170,11 @@ Component({
             })
         },
         clear() {
+            this.setData({
+                location: '',
+                media: [],
+                imgPreviewPaths: []
+            })
             this.editorCtx.clear({
                 success() {
                     console.log('clear success')
@@ -183,20 +193,43 @@ Component({
         },
         insertImage() {
             const that = this
+            let media = that.data.media
             wx.chooseImage({
-                count: 1,
-                success(res) {
-                    that.editorCtx.insertImage({
-                        src: res.tempFilePaths[0],
-                        data: {
-                            id: 'abcd',
-                            role: 'god'
-                        },
-                        width: '80%',
-                        success() {
-                            console.log('insert image success')
-                        }
-                    })
+                count: that.data.maxMediaItemLength - media.length,
+                sizeType: ['compressed'],
+                success(chooseResult) {
+                    let tempFilePaths = chooseResult.tempFilePaths
+                    tempFilePaths.forEach(tempFilePath => {
+                        let type = util.getFileType(tempFilePath)
+                        new Promise((resolve, reject) => {
+                            if (type === 'jpg') {
+                                wx.compressImage({
+                                    src: tempFilePath,
+                                    quality: 60,
+                                    success(compressResult) {
+                                        tempFilePath = compressResult.tempFilePath
+                                        resolve()
+                                    },
+                                    fail() {
+                                        reject()
+                                    }
+                                })
+                            } else {
+                                resolve()
+                            }
+                        }).then(() => {
+                            let imgPreviewPaths = that.data.imgPreviewPaths
+                            media.push({
+                                type,
+                                tempFilePath,
+                            })
+                            imgPreviewPaths.push(tempFilePath)
+                            that.setData({
+                                media,
+                                imgPreviewPaths
+                            })
+                        });
+                    });
                 }
             })
         },
@@ -217,35 +250,116 @@ Component({
                 }
             })
         },
+        onImageTouchStart(e) {
+            console.log('touch start', e.timeStamp)
+            this.setData({
+                touchStart: e.timeStamp
+            })
+        },
+        onImageTouchEnd(e) {
+            console.log('touch end', e.timeStamp)
+            let touchEnd = e.timeStamp
+            let touchStart = this.data.touchStart
+            const that = this
+            if (touchEnd - touchStart < 500) {
+                this.previewCurrentImage(e.currentTarget.dataset.path)
+            } else {
+                wx.showModal({
+                    content: '是否删除此图片',
+                    success(res) {
+                        if (res.confirm) {
+                            let media = that.data.media
+                            let imgPreviewPaths = that.data.imgPreviewPaths
+                            let deleteIndex = e.currentTarget.dataset.index
+                            media.splice(deleteIndex, 1)
+                            imgPreviewPaths.splice(deleteIndex, 1)
+                            that.setData({
+                                media,
+                                imgPreviewPaths
+                            })
+                        }
+                    }
+                })
+                console.log('trigger to delete')
+            }
+        },
+        previewCurrentImage(currentImagePath) {
+            console.log("lmy preview image", currentImagePath, this.data.imgPreviewPaths);
+            wx.previewImage({
+                urls: this.data.imgPreviewPaths,
+                current: currentImagePath,
+                showmenu: true,
+                success: (res) => {},
+                fail: (res) => {
+                    console.error('failed to preview image', res)
+                    wx.showToast({
+                        title: '预览失败',
+                    })
+                },
+                complete: (res) => {},
+            })
+        },
+        uploadMedia(diaryId) {
+            // 上传到云存储
+            let promises = this.data.media.map(item => {
+                return wx.cloud.uploadFile({
+                    cloudPath: app.globalData.openid + '/' + new Date().valueOf() + '.' + item.type.format,
+                    filePath: item.tempFilePath,
+                })
+            })
+            return Promise.all(promises).then(res => {
+                let insertData = []
+                const media = this.data.media
+                res.forEach((item, index) => {
+                    insertData.push({
+                        diaryId,
+                        type: media[index].type,
+                        fileID: item.fileID,
+                        createdAt: util.formatSec(new Date()),
+                        deleted: 0
+                    })
+                })
+                console.log("lmy", res, insertData);
+                wx.cloud.callFunction({
+                    name: 'bulkInsert',
+                    data: {
+                        data: insertData,
+                        table: 'attachment'
+                    }
+                })
+            })
+        },
         onPublish() {
             console.log('lmy publish', this.data.location, this.data.editContent)
             // 1. 获取数据库引用
             const db = wx.cloud.database()
-            // 2. 构造查询语句
+            // 2. 保存日记 
+            const that = this
             db.collection('diary').add({
                 data: {
                     content: this.data.editContent,
                     location: this.data.location,
                     createdAt: util.formatSec(new Date()),
                     deleted: 0
-                },
-                success: res => {       
+                }
+            }).then(res => {
+                that.uploadMedia(res._id).then(res => {
                     wx.showToast({
                         title: '发表成功',
                         duration: 2000,
                         success: () => {
-                            this.clear()
+                            that.clear()
                             wx.switchTab({
                                 url: '/pages/diary/index',
                             })
                         }
                     })
-                },
-                fail: res => {
-                    wx.showToast({
-                        title: '发表失败',
-                    })
-                }
+                })
+            }).catch(res => {
+                console.error('failed to publish media', res)
+                wx.showToast({
+                    title: '图片上传失败',
+                })
             })
         }
     },
