@@ -9,6 +9,16 @@
                 <view class="nick-name">{{ item.nickName }}</view>
                 <view class="diary-content-container">
                     <rich-text class="diary-content" nodes="{{ item.content }}"></rich-text>
+                    <view class="attachment-container">
+                        <block wx:for="{{ item.attachmentLists }}" wx:for-index="idx" wx:for-item="attachment" wx:key="idx">
+                            <image class="attachment-img" src="{{ attachment }}"
+                            mode="aspectFill"
+                            catchtouchend="previewCurrentImage"
+                            data-diary-index="{{ index }}"
+                            data-path="{{ attachment }}"
+                            ></image>
+                        </block>
+                    </view>
                 </view>
                 <view class="location other-info">{{ item.location }}</view>
                 <view class="create-time other-info">{{ item.createdAt }}</view>

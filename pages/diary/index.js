@@ -10,11 +10,10 @@ Page({
     pullRefresh: false
   },
   onLoad() {
-    console.log("lmy on load")
     this.getRefreshPage(1)
   },
-  onShow() {
-    console.log("lmy on show");
+  onShow(options) {
+    console.log("lmy on show", options);
     if (this.data.users.length !== 0) {
       this.getRefreshPage(this.data.currentPage)
     }
@@ -27,6 +26,7 @@ Page({
       this.getAllUsers().then(res => {
         this.getCertainPageDiary(page)
       }).catch(err => {
+        console.error(err);
         wx.hideLoading();
         wx.showToast({
           title: '获取用户信息错误',
@@ -56,31 +56,40 @@ Page({
       })
   },
   getCertainPageDiary(page) {
-    const db = wx.cloud.database()
-    db.collection('diary')
-      .where({
-        deleted: 0
-      })
-      .skip((page - 1) * this.data.size)
-      .limit(this.data.size)
-      .orderBy('createdAt', 'desc')
-      .get()
-      .then(res => {
-        const data = res.data
-        let addedDiary = []
-        data.forEach(item => {
-          let user = this.data.users[item._openid] ? this.data.users[item._openid] : {
-            nickName: '未知用户'
-          }
-          addedDiary.push({
+    wx.cloud.callFunction({
+      name: 'collectionAggregate',
+      data: {
+        collect: 'diary',
+        from: 'attachment',
+        localField: '_id',
+        foreignField: 'diaryId',
+        as: 'attachmentList',
+        skip: (page - 1) * this.data.size,
+        limit: this.data.size,
+        sort: {
+          createdAt: -1
+        }
+      }
+    }).then(res => {
+      const data = res.result.list
+      let addedDiary = []
+      let promises = data.map((item, index) => {
+        let user = this.data.users[item._openid] ? this.data.users[item._openid] : {
+          nickName: '未知用户'
+        }
+        return this.getTempFileUrlsOnOss(item.attachmentList).then(res => {
+          addedDiary[index] = {
             "_id": item._id,
             "content": item.content,
             "createdAt": util.formatDateDiff(item.createdAt),
             "nickName": user.nickName,
             "avatarUrl": user.avatarUrl,
-            "location": item.location
-          })
-        })
+            "location": item.location,
+            "attachmentLists": res
+          }
+        });
+      })
+      Promise.all(promises).then(res => {
         let diary = this.data.diary
         let currentPage = this.data.currentPage
         let isLastPage = this.data.isLastPage
@@ -88,8 +97,8 @@ Page({
         // 若是顶部刷新或首次加载
         if (page === 1) {
           // 重新加载
-            diary = addedDiary
-            currentPage = 1
+          diary = addedDiary
+          currentPage = 1
         } else if (!isLastPage) {
           // 底部刷新且非最后一页
           diary = diary.concat(addedDiary)
@@ -102,7 +111,7 @@ Page({
             diary.splice(-lastPageItemCount, lastPageItemCount, ...addedDiary)
           }
         }
-        
+
         if (addedDiary.length < this.data.size) {
           isLastPage = true
         } else {
@@ -117,10 +126,11 @@ Page({
         })
         console.log('lmy get all diary', this.data.diary, this.data.currentPage)
         wx.hideLoading();
-      }).catch(err => {
-        console.log("lmy diary list err", err);
-        wx.hideLoading();
       })
+    }).catch(err => {
+      console.log("lmy diary list err", err);
+      wx.hideLoading();
+    })
   },
   upper() {
     console.log("lmy trigger pull update");
@@ -129,5 +139,51 @@ Page({
   lower() {
     console.log("lmy trigger bottom update");
     this.getRefreshPage(this.data.currentPage)
+  },
+  getTempFileUrlsOnOss(attachmentList) {
+    return new Promise((resolve, reject) => {
+      if (!attachmentList || attachmentList.length === 0) {
+        resolve([])
+      } else {
+        let fileList = attachmentList.map(item => {
+          return {
+            fileID: item.fileID,
+            maxAge: 60 * 60, // one hour
+          }
+        })
+        wx.cloud.getTempFileURL({
+          fileList
+        }).then(res => {
+          let result = res.fileList.map((item, index) => {
+            // return {
+            //   "type": attachmentList[index].type.type,
+            //   "url": item.tempFileURL
+            // }
+            return item.tempFileURL
+          })
+          resolve(result)
+        }).catch(res => {
+          console.error(res)
+          reject([])
+        })
+      }
+    })
+  },
+  previewCurrentImage(e) {
+    let index = e.currentTarget.dataset.diaryIndex
+    let currentImagePath = e.currentTarget.dataset.path
+    wx.previewImage({
+      urls: this.data.diary[index].attachmentLists,
+      current: currentImagePath,
+      showmenu: true,
+      success: (res) => {},
+      fail: (res) => {
+        console.error('failed to preview image', res)
+        wx.showToast({
+          title: '预览失败',
+        })
+      },
+      complete: (res) => {},
+    })
   }
 })
