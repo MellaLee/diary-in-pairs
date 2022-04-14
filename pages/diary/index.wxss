@@ -4,6 +4,25 @@
     background-color: #ffffff;
 }
 
+.loading-container {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    display: inline-block;
+    border: 4px solid hsl(222 100% 95%);
+    border-left-color: hsl(243 80% 62%);
+    border-radius: 50%;
+    width: 15px;
+    height: 15px;
+    animation: donut-spin 1.2s linear infinite;
+}
+
+@keyframes donut-spin {
+    to {
+        transform: rotate(1turn);
+    }
+}
+
 .scroll-view-diary {
     height: 100vh;
 }
@@ -29,8 +48,13 @@
     margin-bottom: 5px;
 }
 
-.diary-content-container {
-    margin-bottom: 10px;
+.create-time {
+    margin-top: 10px;
+}
+
+.ql-container {
+    height: auto;
+    min-height: 0px;
 }
 
 .attachment-container {

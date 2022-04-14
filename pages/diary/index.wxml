@@ -1,4 +1,5 @@
 <view class="diary-list">
+    <view class="loading-container{{ diaryLoading ? '' : ' hide-mode' }} "></view>
     <scroll-view class="scroll-view-diary" scroll-y="true" enable-back-to-top="true" bindscrolltolower="lower" refresher-enabled="true" refresher-default-style="white" refresher-background="#f7f7f7fa"
     refresher-threshold="{{100}}" bindrefresherrefresh="upper" refresher-triggered="{{pullRefresh}}">
         <view class="scroll-diary-list-item" wx:for="{{ diary }}" wx:key="_id">
@@ -8,8 +9,12 @@
             <view class="content-container">
                 <view class="nick-name">{{ item.nickName }}</view>
                 <view class="diary-content-container">
-                    <rich-text class="diary-content" nodes="{{ item.content }}"></rich-text>
-                    <view class="attachment-container">
+                    <view class="ql-container">
+                        <view class="ql-editor">
+                            <rich-text class="diary-content" nodes="{{ item.content }}"></rich-text>
+                        </view>
+                    </view>
+                    <view wx:if="{{ item.attachmentLists.length > 0 }}" class="attachment-container">
                         <block wx:for="{{ item.attachmentLists }}" wx:for-index="idx" wx:for-item="attachment" wx:key="idx">
                             <image class="attachment-img" src="{{ attachment }}"
                             mode="aspectFill"
@@ -20,7 +25,7 @@
                         </block>
                     </view>
                 </view>
-                <view class="location other-info">{{ item.location }}</view>
+                <view wx:if="{{ item.location }}" class="location other-info">{{ item.location }}</view>
                 <view class="create-time other-info">{{ item.createdAt }}</view>
             </view>
         </view>

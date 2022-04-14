@@ -146,10 +146,6 @@
   margin: -10px 0 0 -2px;
 }
 
-.hide-mode {
-  display: none;
-}
-
 .add-media-img {
   width: var(--media-content-height);
   height: var(--media-content-height);

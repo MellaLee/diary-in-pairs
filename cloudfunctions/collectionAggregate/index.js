@@ -17,9 +17,9 @@ exports.main = async (event, context) => {
             foreignField: event.foreignField, 
             as: event.as 
         })
+        .sort(event.sort)
         .skip(event.skip)
         .limit(event.limit)
-        .sort(event.sort)
         .end()
         .then(res => {
             console.log("success to aggregate", res)

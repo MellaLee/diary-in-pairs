@@ -21,6 +21,7 @@ Component({
         maxMediaItemLength: 3,
         touchStart: '',
         imgPreviewPaths: [],
+        publishBtnLoading: false,
         // 编辑器属性
         formats: {},
         readOnly: false,
@@ -330,6 +331,9 @@ Component({
             })
         },
         onPublish() {
+            this.setData({
+                publishBtnLoading: true
+            });
             console.log('lmy publish', this.data.location, this.data.editContent)
             // 1. 获取数据库引用
             const db = wx.cloud.database()
@@ -349,8 +353,12 @@ Component({
                         duration: 2000,
                         success: () => {
                             that.clear()
+                            that.setData({
+                                publishBtnLoading: false 
+                            });
+                            app.globalData.switchToDiaryList = 1
                             wx.switchTab({
-                                url: '/pages/diary/index',
+                                url: '/pages/diary/index'
                             })
                         }
                     })

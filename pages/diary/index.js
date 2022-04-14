@@ -4,24 +4,31 @@ Page({
   data: {
     diary: [],
     currentPage: 1,
-    size: 10,
+    size: 6,
     isLastPage: false,
     users: [],
-    pullRefresh: false
+    diaryLoading: false
   },
   onLoad() {
+    wx.showLoading({
+      title: '日志加载中',
+    });
     this.getRefreshPage(1)
   },
-  onShow(options) {
-    console.log("lmy on show", options);
+  onShow() {
+    if (getApp().globalData.switchToDiaryList === 1) {
+      getApp().globalData.switchToDiaryList = 0
+      this.getRefreshPage(1)
+    }
+  },
+  onTabItemTap() {
     if (this.data.users.length !== 0) {
+      // 非首次加载页面，通过tab进入时加载页面
+      console.log('lmy get tab diary on page', this.data.currentPage)
       this.getRefreshPage(this.data.currentPage)
     }
   },
   getRefreshPage(page) {
-    wx.showLoading({
-      title: '日志加载中',
-    });
     if (this.data.users.length === 0) {
       this.getAllUsers().then(res => {
         this.getCertainPageDiary(page)
@@ -33,9 +40,11 @@ Page({
         })
       })
     } else {
+      this.setData({
+        diaryLoading: true
+      })
       this.getCertainPageDiary(page)
     }
-
   },
   getAllUsers() {
     const db = wx.cloud.database()
@@ -93,7 +102,6 @@ Page({
         let diary = this.data.diary
         let currentPage = this.data.currentPage
         let isLastPage = this.data.isLastPage
-        let pullRefresh = false;
         // 若是顶部刷新或首次加载
         if (page === 1) {
           // 重新加载
@@ -112,6 +120,7 @@ Page({
           }
         }
 
+        console.log('lmy get diary on Page', currentPage, diary)
         if (addedDiary.length < this.data.size) {
           isLastPage = true
         } else {
@@ -122,14 +131,16 @@ Page({
           diary,
           currentPage,
           isLastPage,
-          pullRefresh
+          diaryLoading: false
         })
-        console.log('lmy get all diary', this.data.diary, this.data.currentPage)
         wx.hideLoading();
       })
     }).catch(err => {
       console.log("lmy diary list err", err);
       wx.hideLoading();
+      this.setData({
+        diaryLoading: false
+      })
     })
   },
   upper() {
@@ -185,5 +196,6 @@ Page({
       },
       complete: (res) => {},
     })
-  }
+  },
+  
 })

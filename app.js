@@ -20,6 +20,7 @@ App({
   globalData: {
     openid: '',
     nickName: '',
-    avatarUrl: ''
+    avatarUrl: '',
+    switchToDiaryList: 0
   }
 })
