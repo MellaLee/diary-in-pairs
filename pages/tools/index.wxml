@@ -1,0 +1,8 @@
+<!--pages/tools/index.wxml-->
+<view class="tools-container">
+    <view class="age-calculator">
+        <view class="age-card" wx:for="{{ ageList }}" wx:key="index">
+            {{ item.name }} : {{ item.age }}
+        </view>
+    </view>
+</view>

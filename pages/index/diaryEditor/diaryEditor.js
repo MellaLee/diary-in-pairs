@@ -206,7 +206,7 @@ Component({
                             if (type === 'jpg') {
                                 wx.compressImage({
                                     src: tempFilePath,
-                                    quality: 60,
+                                    quality: 50,
                                     success(compressResult) {
                                         tempFilePath = compressResult.tempFilePath
                                         resolve()

@@ -1,0 +1,14 @@
+/* pages/tools/index.wxss */
+.age-calculator {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    height: 80px;
+    width: calc(100% - 20px);
+}
+.age-card {
+    border-radius: 15%;
+    padding: 12px;
+    background: #b4a078;
+    border: 10px solid hsla(0, 0%, 100%, .5);
+}

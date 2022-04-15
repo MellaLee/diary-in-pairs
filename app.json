@@ -1,9 +1,8 @@
 {
     "pages": [
         "pages/index/index",
-        "pages/logs/logs",
         "pages/diary/index",
-        "pages/message/index"
+        "pages/tools/index"
     ],
     "window": {
         "backgroundTextStyle": "light",
@@ -39,7 +38,7 @@
                 "text": "In Pairs"
             },
             {
-                "pagePath": "pages/message/index",
+                "pagePath": "pages/tools/index",
                 "iconPath": "@iconPathDiary",
                 "selectedIconPath": "@selectediconPathDiary",
                 "text": "小工具"
