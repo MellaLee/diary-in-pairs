@@ -1,4 +1,5 @@
 const util = require('../../utils/util.js')
+const app = getApp()
 
 Page({
   data: {
@@ -7,7 +8,11 @@ Page({
     size: 6,
     isLastPage: false,
     users: [],
-    diaryLoading: false
+    diaryLoading: false,
+    pullRefresh: false,
+    enableComment: false,
+    commentContent: '',
+    commentInfo: {}
   },
   onLoad() {
     wx.showLoading({
@@ -41,7 +46,8 @@ Page({
       })
     } else {
       this.setData({
-        diaryLoading: true
+        diaryLoading: true,
+        pullRefresh: false
       })
       this.getCertainPageDiary(page)
     }
@@ -69,10 +75,17 @@ Page({
       name: 'collectionAggregate',
       data: {
         collect: 'diary',
-        from: 'attachment',
-        localField: '_id',
-        foreignField: 'diaryId',
-        as: 'attachmentList',
+        aggregate: [{
+          from: 'attachment',
+          localField: '_id',
+          foreignField: 'diaryId',
+          as: 'attachmentList',
+        }, {
+          from: 'comment',
+          localField: '_id',
+          foreignField: 'diaryId',
+          as: 'commentList',
+        }],
         skip: (page - 1) * this.data.size,
         limit: this.data.size,
         sort: {
@@ -94,7 +107,8 @@ Page({
             "nickName": user.nickName,
             "avatarUrl": user.avatarUrl,
             "location": item.location,
-            "attachmentLists": res
+            "attachmentLists": res,
+            "commentLists": item.commentList
           }
         });
       })
@@ -197,5 +211,69 @@ Page({
       complete: (res) => {},
     })
   },
-  
+  bindEnableComment(e) {
+    const dataset = e.currentTarget.dataset
+    console.log("lmy", dataset);
+    this.setData({
+      commentInfo: {
+        diaryIndex: dataset.diaryIndex,
+        diaryId: dataset.diaryId,
+        replyedNickname: dataset.replyedNickname,
+        replyedCommentId: dataset.replyedCommentId,
+        replyNickname: app.globalData.nickName
+      },
+      enableComment: true
+    })
+  },
+  bindSubmitComment(e) {
+    this.setData({
+      SubmitCommentBtnLoading: true
+    });
+    const db = wx.cloud.database()
+    const commentInfo = this.data.commentInfo
+    console.log('lmy bind texarea', commentInfo, e.detail.value.comment)
+    const that = this
+    db.collection('comment').add({
+      data: {
+        ...commentInfo,
+        content: e.detail.value.comment,
+        createdAt: util.formatSec(new Date()),
+        deleted: 0
+      }
+    }).then(res => {
+      that.updateComment(commentInfo.diaryId, commentInfo.diaryIndex)
+      that.setData({
+        enableComment: false,
+        commentInfo: {},
+        commentContent: ''
+      })
+    })
+  },
+  updateComment(diaryId, diaryIndex) {
+    this.setData({
+      diaryLoading: true
+    })
+    const that = this
+    const db = wx.cloud.database()
+    db.collection('comment').where({
+      diaryId,
+      deleted: 0
+    }).get().then(res => {
+      that.setData({
+        diaryLoading: false,
+        [`diary[${diaryIndex}].commentLists`]: res.data
+      })
+      console.log("lmy update comment", res);
+    })
+  },
+  bindHideComment() {
+    this.setData({
+      enableComment: false
+    })
+  },
+  bindTextAreaFocus(e) {
+    this.setData({
+      commentContent: e.detail.value
+    })
+  }
 })

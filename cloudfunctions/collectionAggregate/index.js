@@ -12,10 +12,9 @@ exports.main = async (event, context) => {
             deleted: 0 
         })
         .lookup({
-            from: event.from, 
-            localField: event.localField,
-            foreignField: event.foreignField, 
-            as: event.as 
+            ...event.aggregate[0]
+        }).lookup({
+            ...event.aggregate[1]
         })
         .sort(event.sort)
         .skip(event.skip)

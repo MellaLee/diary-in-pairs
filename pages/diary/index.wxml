@@ -1,7 +1,6 @@
 <view class="diary-list">
     <view class="loading-container{{ diaryLoading ? '' : ' hide-mode' }} "></view>
-    <scroll-view class="scroll-view-diary" scroll-y="true" enable-back-to-top="true" bindscrolltolower="lower" refresher-enabled="true" refresher-default-style="white" refresher-background="#f7f7f7fa"
-    refresher-threshold="{{100}}" bindrefresherrefresh="upper" refresher-triggered="{{pullRefresh}}">
+    <scroll-view class="scroll-view-diary" scroll-y="true" enable-back-to-top="true" bindscrolltolower="lower" refresher-enabled="true" refresher-default-style="white" refresher-background="#f7f7f7fa" refresher-threshold="{{100}}" bindrefresherrefresh="upper" refresher-triggered="{{pullRefresh}}">
         <view class="scroll-diary-list-item" wx:for="{{ diary }}" wx:key="_id">
             <view class="avatar-container">
                 <image class="avatar" src="{{ item.avatarUrl }}"></image>
@@ -16,18 +15,33 @@
                     </view>
                     <view wx:if="{{ item.attachmentLists.length > 0 }}" class="attachment-container">
                         <block wx:for="{{ item.attachmentLists }}" wx:for-index="idx" wx:for-item="attachment" wx:key="idx">
-                            <image class="attachment-img" src="{{ attachment }}"
-                            mode="aspectFill"
-                            catchtouchend="previewCurrentImage"
-                            data-diary-index="{{ index }}"
-                            data-path="{{ attachment }}"
-                            ></image>
+                            <image class="attachment-img" src="{{ attachment }}" mode="aspectFill" catchtouchend="previewCurrentImage" data-diary-index="{{ index }}" data-path="{{ attachment }}"></image>
                         </block>
                     </view>
                 </view>
                 <view wx:if="{{ item.location }}" class="location other-info">{{ item.location }}</view>
-                <view class="create-time other-info">{{ item.createdAt }}</view>
+                <view class="operate-container">
+                    <view class="create-time other-info">{{ item.createdAt }}</view>
+                    <view class="comment-btn-container">
+                        <i class="comment-btn" data-diary-id="{{ item._id }}" data-diary-index="{{ index }}" bindtap="bindEnableComment"></i>
+                    </view>
+                </view>
+                <view wx-if="{{ item.commentLists.length > 0 }}" class="comment-container">
+                    <block wx:for="{{ item.commentLists }}" wx:for-index="comment-idx" wx:for-item="comment" wx:key="_id">
+                        <view class="comment-content" data-diary-id="{{ item._id }}" data-replyed-nickname="{{ comment.replyNickname }}" data-replyed-comment-id="{{ comment._id}}" data-diary-index="{{ index }}" bindtap="bindEnableComment">
+                            <span class="reply-nickname nickname">{{ comment.replyNickname }}</span>
+                            <span wx-if="{{ comment.replyedNickname }}" class="replyed-nickname">回复<span class="nickname">{{ comment.replyedNickname }}</span></span>
+                            <span class="reply-content"><span class="reply-colon">:</span>{{ comment.content }}</span>
+                        </view>
+                    </block>
+                </view>
             </view>
         </view>
     </scroll-view>
+    <form bindsubmit="bindSubmitComment" class="comment-form" wx:if="{{enableComment}}">
+        <view class="comment-textarea">
+            <textarea focus name="comment" value="{{ commentContent }}" maxlength="-1" cursor-spacing="15" placeholder="评论" auto-height show-confirm-bar="false" bindblur="bindHideComment" bindinput="bindTextAreaFocus"></textarea>
+            <button form-type="submit" class="submit" disabled="{{ commentContent.length === 0 }}">发送</button>
+        </view>
+    </form>
 </view>

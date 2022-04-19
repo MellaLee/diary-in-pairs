@@ -15,6 +15,7 @@
     width: 15px;
     height: 15px;
     animation: donut-spin 1.2s linear infinite;
+    z-index: 100;
 }
 
 @keyframes donut-spin {
@@ -31,6 +32,9 @@
     display: flex;
     padding-bottom: 15px;
     margin: 20px 20px 30px 20px;
+}
+
+.scroll-diary-list-item:not(:last-child) {
     box-shadow: 0 1px 0 0 rgb(0 0 0 / 6%);
 }
 
@@ -48,9 +52,6 @@
     margin-bottom: 5px;
 }
 
-.create-time {
-    margin-top: 10px;
-}
 
 .ql-container {
     height: auto;
@@ -75,4 +76,107 @@
 
 .location {
     margin-bottom: 15px;
+}
+
+.operate-container {
+    width: calc(100vw - 100px);
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.comment-btn-container {}
+
+.comment-btn {
+    width: 22px;
+    height: 14px;
+    border-radius: 10%;
+    background-color: currentColor;
+    color: #8c99c1;
+    display: inline-block;
+    position: relative;
+    vertical-align: middle;
+}
+
+.comment-btn::before {
+    content: "";
+    width: 0;
+    height: 0;
+    border: 3px solid currentColor;
+    border-color: transparent currentColor transparent currentColor;
+    border-width: 4px 6px 4px 0;
+    position: absolute;
+    top: calc(38% - 2px);
+    left: -12.5%;
+}
+
+.comment-btn::after {
+    content: "";
+    width: 3px;
+    height: 3px;
+    background: #fff;
+    position: absolute;
+    top: 33.4%;
+    left: 20.8%;
+    border-radius: 25%;
+    box-shadow: 11px 0 0 #fff;
+    transform: translate(0, 50%);
+}
+
+.comment-form {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: calc(100%- 16rpx);
+    padding: 18rpx 0 18rpx 30rpx;
+    background-color: #f7f8f7;
+    font-size: 28rpx;
+    z-index: 999;
+}
+
+.comment-textarea {
+    display: flex;
+    justify-content: space-between;
+}
+
+.comment-form textarea {
+    width: 550rpx;
+    min-height: 34rpx;
+    max-height: 102rpx;
+    border-width: 15rpx 20rpx;
+    border-style: solid;
+    border-color: #fff;
+    font-size: 28rpx;
+    background-color: #fff;
+    border-radius: 4rpx;
+}
+
+.comment-form .submit {
+    width: 120rpx;
+    height: 64rpx;
+    text-align: center;
+    color: #6c0;
+    margin: 0 3px;
+    padding: 0;
+}
+
+.comment-container {
+    margin-top: 5px;
+    background: #f0f2f5;
+    border-radius: 3px;
+    padding: 2px 4px;
+}
+
+.comment-content {
+    margin: 2px;
+    font-size: 15px;
+}
+
+.nickname {
+    color: #8c99c1;
+}
+
+.reply-colon {
+    margin-right: 4px;
 }
