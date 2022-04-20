@@ -11,12 +11,14 @@ Page({
     diaryLoading: false,
     enableComment: false,
     commentContent: '',
-    commentInfo: {}
+    commentInfo: {},
+    templateId: 'ekt0OZ38WjCfKwEkRWF_xwjWSsK3cSUeW7--GJd1ivM'
   },
   onLoad() {
     wx.showLoading({
       title: '日志加载中',
     });
+
     this.getRefreshPage(1)
   },
   onShow() {
@@ -100,6 +102,7 @@ Page({
         return this.getTempFileUrlsOnOss(item.attachmentList).then(res => {
           addedDiary[index] = {
             "_id": item._id,
+            "_openid": item._openid,
             "content": item.content,
             "createdAt": util.formatDateDiff(item.createdAt),
             "nickName": user.nickName,
@@ -211,17 +214,24 @@ Page({
     })
   },
   bindEnableComment(e) {
+    const that = this
     const dataset = e.currentTarget.dataset
-    console.log("lmy", dataset);
-    this.setData({
-      commentInfo: {
-        diaryIndex: dataset.diaryIndex,
-        diaryId: dataset.diaryId,
-        replyedNickname: dataset.replyedNickname,
-        replyedCommentId: dataset.replyedCommentId,
-        replyNickname: app.globalData.nickName
-      },
-      enableComment: true
+    wx.requestSubscribeMessage({
+      tmplIds: [this.data.templateId],
+      success(res) {
+        console.log("subscribe once")
+        that.setData({
+          commentInfo: {
+            diaryIndex: dataset.diaryIndex,
+            diaryId: dataset.diaryId,
+            replyedNickname: dataset.replyedNickname,
+            replyedOpenid: dataset.replyedOpenid,
+            replyedCommentId: dataset.replyedCommentId,
+            replyNickname: app.globalData.nickName
+          },
+          enableComment: true
+        })
+      }
     })
   },
   bindSubmitComment(e) {
@@ -232,20 +242,46 @@ Page({
     const commentInfo = this.data.commentInfo
     console.log('lmy bind texarea', commentInfo, e.detail.value.comment)
     const that = this
+    const createdAt = util.formatSec(new Date())
+    const content = e.detail.value.comment
     db.collection('comment').add({
       data: {
         ...commentInfo,
-        content: e.detail.value.comment,
-        createdAt: util.formatSec(new Date()),
+        content,
+        createdAt,
         deleted: 0
       }
     }).then(res => {
       that.updateComment(commentInfo.diaryId, commentInfo.diaryIndex)
+      that.sendSubscribeMsg(commentInfo, content, createdAt)
       that.setData({
         enableComment: false,
         commentInfo: {},
         commentContent: ''
       })
+    })
+  },
+  sendSubscribeMsg(commentInfo, content, createdAt) {
+    console.log("send a msg", {
+      touser: commentInfo.replyedOpenid,
+      content,
+      createdAt,
+      commentUser: commentInfo.replyNickname,
+      templateId: this.data.templateId
+    })
+    wx.cloud.callFunction({
+      name: "sendSubscribeMessage",
+      data: {
+        touser: commentInfo.replyedOpenid,
+        content,
+        createdAt,
+        commentUser: commentInfo.replyNickname,
+        templateId: this.data.templateId
+      }
+    }).then(res => {
+      console.log("success to send subscribe msg", res)
+    }).catch(err => {
+      console.log("failed to send subscribe msg", err)
     })
   },
   updateComment(diaryId, diaryIndex) {

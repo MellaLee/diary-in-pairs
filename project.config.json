@@ -60,6 +60,8 @@
     },
     "isGameTourist": false,
     "cloudfunctionTemplateRoot": "cloudfunctionTemplate",
+    "cloudfunctionRoot": "cloudfunctions/",
+    "miniprogramRoot": "miniprogram/",
     "condition": {
         "search": {
             "list": []
@@ -79,7 +81,5 @@
         "miniprogram": {
             "list": []
         }
-    },
-    "cloudfunctionRoot": "/cloudfunctions/",
-    "miniprogramRoot": "/miniprogram/"
+    }
 }
