@@ -80,5 +80,6 @@
             "list": []
         }
     },
-    "cloudfunctionRoot": "cloudfunctions"
+    "cloudfunctionRoot": "/cloudfunctions/",
+    "miniprogramRoot": "/miniprogram/"
 }

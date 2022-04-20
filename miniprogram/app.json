@@ -24,8 +24,7 @@
         "selectedColor": "@tabBarSelectedColor",
         "borderStyle": "@tabBarBorderStyle",
         "backgroundColor": "@tabBarBackgroundColor",
-        "list": [
-            {
+        "list": [{
                 "pagePath": "pages/index/index",
                 "iconPath": "@iconPathDiary",
                 "selectedIconPath": "@selectediconPathDiary",
