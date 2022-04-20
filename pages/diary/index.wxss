@@ -24,10 +24,6 @@
     }
 }
 
-.scroll-view-diary {
-    height: 100vh;
-}
-
 .scroll-diary-list-item {
     display: flex;
     padding-bottom: 15px;

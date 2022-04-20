@@ -1,6 +1,6 @@
 <view class="diary-list">
     <view class="loading-container{{ diaryLoading ? '' : ' hide-mode' }} "></view>
-    <scroll-view class="scroll-view-diary" scroll-y="true" enable-back-to-top="true" bindscrolltolower="lower" refresher-enabled="true" refresher-default-style="white" refresher-background="#f7f7f7fa" refresher-threshold="{{100}}" bindrefresherrefresh="upper" refresher-triggered="{{pullRefresh}}">
+    <view class="scroll-view-diary">
         <view class="scroll-diary-list-item" wx:for="{{ diary }}" wx:key="_id">
             <view class="avatar-container">
                 <image class="avatar" src="{{ item.avatarUrl }}"></image>
@@ -37,7 +37,7 @@
                 </view>
             </view>
         </view>
-    </scroll-view>
+    </view>
     <form bindsubmit="bindSubmitComment" class="comment-form" wx:if="{{enableComment}}">
         <view class="comment-textarea">
             <textarea focus name="comment" value="{{ commentContent }}" maxlength="-1" cursor-spacing="15" placeholder="评论" auto-height show-confirm-bar="false" bindblur="bindHideComment" bindinput="bindTextAreaFocus"></textarea>

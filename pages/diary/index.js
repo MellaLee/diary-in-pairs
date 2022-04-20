@@ -9,7 +9,6 @@ Page({
     isLastPage: false,
     users: [],
     diaryLoading: false,
-    pullRefresh: false,
     enableComment: false,
     commentContent: '',
     commentInfo: {}
@@ -47,7 +46,6 @@ Page({
     } else {
       this.setData({
         diaryLoading: true,
-        pullRefresh: false
       })
       this.getCertainPageDiary(page)
     }
@@ -121,6 +119,7 @@ Page({
           // 重新加载
           diary = addedDiary
           currentPage = 1
+          wx.stopPullDownRefresh()
         } else if (!isLastPage) {
           // 底部刷新且非最后一页
           diary = diary.concat(addedDiary)
@@ -157,11 +156,11 @@ Page({
       })
     })
   },
-  upper() {
+  onPullDownRefresh() {
     console.log("lmy trigger pull update");
     this.getRefreshPage(1)
   },
-  lower() {
+  onReachBottom() {
     console.log("lmy trigger bottom update");
     this.getRefreshPage(this.data.currentPage)
   },
