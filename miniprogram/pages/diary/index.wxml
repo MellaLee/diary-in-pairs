@@ -28,7 +28,7 @@
                 </view>
                 <view wx-if="{{ item.commentLists.length > 0 }}" class="comment-container">
                     <block wx:for="{{ item.commentLists }}" wx:for-index="comment-idx" wx:for-item="comment" wx:key="_id">
-                        <view class="comment-content" data-diary-id="{{ item._id }}" data-replyed-nickname="{{ comment.replyNickname }}" data-replyed-comment-id="{{ comment._id}}" data-diary-index="{{ index }}" data-replyed-openid="{{ item._openid }}"bindtap="bindEnableComment">
+                        <view class="comment-content" data-diary-id="{{ item._id }}" data-replyed-nickname="{{ comment.replyNickname }}" data-replyed-comment-id="{{ comment._id}}" data-diary-index="{{ index }}" data-replyed-openid="{{ comment._openid }}"bindtap="bindEnableComment">
                             <span class="reply-nickname nickname">{{ comment.replyNickname }}</span>
                             <span wx-if="{{ comment.replyedNickname }}" class="replyed-nickname">回复<span class="nickname">{{ comment.replyedNickname }}</span></span>
                             <span class="reply-content"><span class="reply-colon">:</span>{{ comment.content }}</span>

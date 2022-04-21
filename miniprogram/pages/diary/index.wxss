@@ -71,7 +71,7 @@
 }
 
 .location {
-    margin-bottom: 15px;
+    margin: 4px 0 10px 0;
 }
 
 .operate-container {
